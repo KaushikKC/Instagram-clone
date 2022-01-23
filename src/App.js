@@ -6,11 +6,13 @@ import {db, auth} from './firebase';
 import {
   collection, onSnapshot
 } from 'firebase/firestore'
+import { updateProfile } from 'firebase/auth';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { Input } from '@mui/material';
 import { Button, } from '@mui/material';
 import { Box } from '@mui/system';
 import { Modal } from '@mui/material';
+import ImageUpload from './ImageUpload';
 
 
 
@@ -47,8 +49,8 @@ function App() {
         if (authUser.displayName) {
 
         } else {
-          return authUser.updateProfile({
-            displayName: username
+          return updateProfile(authUser,{
+            displayName: username,
           });
         }
       } else {
@@ -74,7 +76,7 @@ function App() {
     event.preventDefault();
     createUserWithEmailAndPassword(auth,email, password)
     .then((authUser) => {
-      return authUser.user.updateProfile({
+      return updateProfile(authUser.user,{
         displayName: username
       })
     })
@@ -92,6 +94,12 @@ function App() {
 
   return (
     <div className="App">
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName}/>
+      ): (
+        <h3>Sorry you need to login to uploasd </h3>
+      )}
+      
       <Modal
         open={open}
         onClose={() => setOpen(false)}
