@@ -4,7 +4,7 @@ import './App.css';
 import Post from './Components/Post';
 import {db, auth} from './firebase';
 import {
-  collection, onSnapshot
+  collection, onSnapshot, orderBy
 } from 'firebase/firestore'
 import { updateProfile } from 'firebase/auth';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
@@ -13,6 +13,7 @@ import { Button, } from '@mui/material';
 import { Box } from '@mui/system';
 import { Modal } from '@mui/material';
 import ImageUpload from './ImageUpload';
+// import InstagramEmbed from 'react-instagram-embed';
 
 
 
@@ -65,7 +66,7 @@ function App() {
 
 
   useEffect(() => {
-    onSnapshot(collection(db, 'posts'), (snapshot) => {
+    onSnapshot(collection(db, 'posts'),orderBy('timestamp', 'desc'), (snapshot) => {
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
         post: doc.data()
@@ -94,11 +95,6 @@ function App() {
 
   return (
     <div className="App">
-      {user?.displayName ? (
-        <ImageUpload username={user.displayName}/>
-      ): (
-        <h3>Sorry you need to login to uploasd </h3>
-      )}
       
       <Modal
         open={open}
@@ -164,7 +160,7 @@ function App() {
       </Modal>
       <div className='app__header'>
         <img className='app__headerImage' src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png' />
-      </div>
+      
 
       {user ? (
         <Button onClick={() => auth.signOut()}>Logout</Button>
@@ -174,16 +170,43 @@ function App() {
           <Button onClick={() => setOpen(true)}>Sign Up</Button>
         </div>     
       )}
+      </div>
 
       
-
-      <h1>HELLO</h1>
-
+      <div className='app__posts'>
+        <div className='left-post'>
       {
         posts.map(({id, post}) => (
-          <Post key={id} username={post.username} caption={post.caption} ImageURL={post.imageURL}/>
+          <Post key={id} postId={id} user={user} username={post.username} caption={post.caption} ImageURL={post.imageURL}/>
         ))
       }
+        </div>
+        <div className='right-post' >
+          {/* <InstagramEmbed
+          url='https://instagr.am/p/Zw9o4/'
+          clientAccessToken='123|456'
+          maxWidth={320}
+          hideCaption={false}
+          containerTagName='div'
+          protocol=''
+          injectScript
+          onLoading={() => {}}
+          onSuccess={() => {}}
+          onAfterRender={() => {}}
+          onFailure={() => {}}
+        /> */}
+
+        </div>
+
+      </div>
+      
+      
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName}/>
+      ): (
+        <h3>Sorry you need to login to uploasd </h3>
+      )}
+      
     
       
     </div>

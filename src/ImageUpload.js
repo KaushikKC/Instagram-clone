@@ -3,7 +3,7 @@ import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import {storage, db} from './firebase'
 import {ref, getDownloadURL, uploadBytesResumable} from 'firebase/storage'
-import {child} from 'firebase/database'
+import './ImageUpload.css'
 
 
 
@@ -21,15 +21,13 @@ function ImageUpload({username}) {
 
     const handleUpload = () => {
         const downloadUrl = () => {
-            ref(storage,'images')
-            child(storage,image.name)
-            getDownloadURL(ref(storage,'images'))
+            getDownloadURL(uploadTask.snapshot.ref)
             
             .then(url => {
                 addDoc(collection(db,'posts'),{
                     timestamp: serverTimestamp(),
                     caption: caption,
-                    imageUrl: url,
+                    imageURL: url,
                     username: username, 
                     // imagename: image.name
                 });
@@ -56,9 +54,8 @@ function ImageUpload({username}) {
         )
     }
   return ( 
-    <div>
+    <div className='imageUpload'>
         <progress className='imageupload__progress' value={progress} max='100' />
-        <br></br>
         <input type='text' placeholder='Enter a caption..' onChange={event => setCaption(event.target.value)} value={caption}/>
         <input type='file' onChange={handleChange}/>
         <Button onClick={handleUpload} >
