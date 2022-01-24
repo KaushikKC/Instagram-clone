@@ -81,7 +81,9 @@ function App() {
         displayName: username
       })
     })
+    
     .catch((error) => alert(error.message));
+    setOpen(false)
   }
 
   const signIn = (event) => {
@@ -204,7 +206,7 @@ function App() {
       {user?.displayName ? (
         <ImageUpload username={user.displayName}/>
       ): (
-        <h3>Sorry you need to login to uploasd </h3>
+        <h3>Sorry you need to login to upload </h3>
       )}
       
     

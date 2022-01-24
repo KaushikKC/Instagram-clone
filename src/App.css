@@ -32,6 +32,7 @@
 
 .app__headerImage {
   object-fit: contain;
+  cursor: pointer;
 }
 
 
